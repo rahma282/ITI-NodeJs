@@ -1,0 +1,67 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DataBase</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <h1>Employees DataBase</h1>
+
+    <table border="2px solid black">
+      <thead>
+        <tr id="table-header"></tr>
+      </thead>
+      <tbody id="body-data"></tbody>
+    </table>
+
+    <script>
+      async function fetchData() {
+        try {
+          const Employees = await fetch("http://localhost:3000/json").then(
+            (res) => {
+              if (!res.ok) throw new Error("Failed to fetch employees data");
+              return res.json();
+            }
+          );
+
+          const header = document.getElementById("table-header");
+          const bodyData = document.getElementById("body-data");
+
+          if (Employees.length === 0) {
+            console.warn("No data received");
+            header.innerHTML = "";
+            bodyData.innerHTML = "";
+            return;
+          }
+
+          header.innerHTML = "";
+          bodyData.innerHTML = "";
+
+          const keys = Object.keys(Employees[0]).filter((key) => key !== 'ID');
+          
+          keys.forEach((key) => {
+            const th = document.createElement("th");
+            th.textContent = key.toUpperCase();
+            header.appendChild(th);
+          });
+
+          Employees.forEach((emp) => {
+            const row = document.createElement("tr");
+            keys.forEach((key) => {
+              const cell = document.createElement("td");
+              cell.textContent = emp[key] !== undefined ? emp[key] : "";
+              row.appendChild(cell);
+            });
+            bodyData.appendChild(row);
+          });
+
+        } catch (error) {
+          console.error("An error occurred:", error.message);
+        }
+      }
+
+      fetchData();
+    </script>
+  </body>
+</html>
