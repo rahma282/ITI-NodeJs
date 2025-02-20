@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Add Employee</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/assets/formstyle.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Add Employee</h1>
+    </header>
+    <div class="container">
+      <section class="form-section">
+        <form
+          id="employeeForm"
+          action="http://localhost:3000/employees"
+          method="POST"
+        >
+          <!--action attribute define where the data get send-->
+          <section>
+            <fieldset>
+              <label for="fullname">Employee name:</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                placeholder="Enter your name"
+                required
+                value=""
+              />
+              <label for="email">Email:</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="name@example.com"
+                required
+                value=""
+              />
+
+              <label for="salary">Salary:</label>
+              <input
+                type="number"
+                id="salary"
+                name="salary"
+                placeholder="Minimum 7000"
+                min="7000"
+                required
+                value=""
+              />
+            </fieldset>
+          </section>
+          <section>
+            <input type="submit" id="submit-btn" value="Submit" />
+          </section>
+        </form>
+      </section>
+    </div>
+  </body>
+</html>

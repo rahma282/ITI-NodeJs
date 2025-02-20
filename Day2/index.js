@@ -1,70 +1,29 @@
 import http from "http";
-import fs from "fs";
-import { addEmployee, getEmployees } from "./crud.js";
-import { validation } from "./vaildation.js";
+import { genericserverFile, handlePostRequest } from "./generics.js";
 
-const serverFile = (res, filePath, contentType) => {
-  res.writeHead(200, { "Content-Type": contentType });
-  const data = fs.createReadStream(filePath);
-
-  data.pipe(res); //automatically ends the response when the stream finishes.
-
-  data.on("error", (err) => {
-    console.error("File read error:", err);
-    res.writeHead(500, { "Content-Type": "text/plain" });
-    res.end("Error 500 (Internal Server Error)");
-  });
-
-  res.on("error", (err) => {
-    console.error("Response error:", err);
-  });
-};
 const server = http.createServer((req, res) => {
   const { url, method } = req;
   console.log({ url, method });
-  // res.write("test\n");
+  if (method === "GET"){
   if (url === "/json") {
-    serverFile(res, "./employees.json", "text/json");
-  } else if (method === "GET" && url === "/") {
-    serverFile(res, "./file.htm", "text/html");
-  } else if (method === "GET" && url === "/astronomyLink") {
-    serverFile(res, "./assets/img1.png", "image/png");
-  } else if (method === "GET" && url === "/astronomy") {
-    serverFile(res, "./htmlPages&css/astronomy.htm", "text/html");
-  } else if (method === "GET" && url === "/serbalLink") {
-    serverFile(res, "./assets/serbal.png", "image/png");
-  } else if (method === "GET" && url === "/serbal") {
-    serverFile(res, "./htmlPages&css/serbal.htm", "text/html");
-  } else if (method === "GET" && url === "/style.css") {
-    serverFile(res, "./htmlPages&css/style.css", "text/css");
-  } else if (method === "POST" && url === "/employees") {
-    let body = "";
-    req.on("data", (chunk) => {
-      body += chunk.toString();
-    });
-
-    req.on("end", () => {
-      const newEmployee = JSON.parse(body);
-      const employees = getEmployees();
-
-      const newId = employees.length > 0 ? employees[employees.length - 1].ID + 1 : 1;
-      const formattedEmployee = { ID: newId, ...newEmployee };
-
-      if (validation(formattedEmployee) !== -1) {
-        employees.push(formattedEmployee);
-        addEmployee(employees);
-        res.writeHead(201, { "Content-Type": "application/json" });
-        res.end(
-          JSON.stringify({
-            message: "Employee added successfully",
-            employee: formattedEmployee,
-          })
-        );
-      }
-    });
+    genericserverFile(res, "./employees.json", "text/json");
+  } else if (url === "/") {
+    genericserverFile(res, "./pages/file.htm", "text/html");
+  } else if (url === "/astronomyLink") {
+    genericserverFile(res, "./assets/img1.png", "image/png");
+  } else if (url === "/astronomy") {
+    genericserverFile(res, "./pages/astronomy.htm", "text/html");
+  } else if (url === "/serbalLink") {
+    genericserverFile(res, "./assets/serbal.png", "image/png");
+  } else if (url === "/serbal") {
+    genericserverFile(res, "./pages/serbal.htm", "text/html");
+  } else if (url === "/style.css") {
+    genericserverFile(res, "./assets/style.css", "text/css");
+  } 
+}else if (method === "POST" && url === "/employees") {
+    handlePostRequest(req, res);
   } else {
-    res.writeHead(404, { "Content-Type": "text/html" });
-    res.end("Error 404: Not Found");
+    genericserverFile(res, "./pages/not-found.htm", "text/html");
   }
 });
 const PORT = 3000;
