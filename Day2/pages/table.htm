@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Employees Database</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body class="container mt-4">
+    <h1 class="text-center">Employees Database</h1>
+
+    <table class="table table-bordered text-center">
+      <thead class="table-primary">
+        <tr id="table-header"></tr>
+      </thead>
+      <tbody id="body-data"></tbody>
+    </table>
+
+    <!-- pagination -->
+    <nav>
+      <ul class="pagination justify-content-center" id="pagination"></ul>
+    </nav>
+
+    <script>
+      let currentPage = 1;
+      const limit = 15;
+
+      async function fetchData(page = 1) {
+        try {
+          const res = await fetch(`http://localhost:3000/json?page=${page}&limit=${limit}`);
+          if (!res.ok) throw new Error("Failed to fetch employees data");
+
+          const { employees, total } = await res.json();    //Total --> represent number of employees in the database
+          updateTable(employees);
+          updatePagination(page, total);
+        } catch (error) {
+          console.error("Error:", error.message);
+        }
+      }
+
+      function updateTable(employees) {
+        const header = document.getElementById("table-header");
+        const bodyData = document.getElementById("body-data");
+
+        if (employees.length === 0) {
+          header.innerHTML = "<th>No Employees Found</th>";
+          bodyData.innerHTML = "";
+          return;
+        }
+
+        header.innerHTML = "";
+        bodyData.innerHTML = "";
+
+        const keys = Object.keys(employees[0]).filter((key) => key !== "ID");
+
+        keys.forEach((key) => {
+          const th = document.createElement("th");
+          th.textContent = key.toUpperCase();
+          header.appendChild(th);
+        });
+
+        employees.forEach((emp) => {
+          const row = document.createElement("tr");
+          keys.forEach((key) => {
+            const cell = document.createElement("td");
+            cell.textContent = emp[key] !== undefined ? emp[key] : "";
+            row.appendChild(cell);
+          });
+          bodyData.appendChild(row);
+        });
+      }
+
+      function updatePagination(page, total) {
+        const totalPages = Math.ceil(total / limit);
+        const pagination = document.getElementById("pagination");
+        pagination.innerHTML = "";
+
+        const createPageItem = (text, pageNumber, disabled = false, active = false) => {
+          const li = document.createElement("li");
+          li.className = `page-item ${disabled ? "disabled" : ""} ${active ? "active" : ""}`;
+
+          const a = document.createElement("a");
+          a.className = "page-link";
+          a.href = "#";
+          a.textContent = text;
+          if (!disabled) {
+            a.addEventListener("click", (e) => {
+              e.preventDefault();
+              fetchData(pageNumber);
+            });
+          }
+
+          li.appendChild(a);
+          return li;
+        };
+
+        pagination.appendChild(createPageItem("Previous", page - 1, page === 1));
+
+        for (let i = 1; i <= totalPages; i++) {
+          pagination.appendChild(createPageItem(i, i, false, i === page));
+        }
+
+        pagination.appendChild(createPageItem("Next", page + 1, page === totalPages));
+
+        currentPage = page;
+      }
+
+      fetchData();
+
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

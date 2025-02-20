@@ -13,27 +13,12 @@ table {
   background-color: #ffffff;
 }
 
-thead {
-  background-color: #092d53;
-  color: white;
-  font-weight: bold;
-  text-transform: uppercase;
-}
 
 th,
 td {
   padding: 12px;
   text-align: left;
   border-bottom: 1px solid #ddd;
-}
-
-tbody tr:nth-child(even) {
-  background-color: #f2f2f2;
-}
-
-tbody tr:hover {
-  background-color: #dbeafe;
-  transition: 0.3s;
 }
 
 .data {
