@@ -10,7 +10,8 @@ export const genericserverFile = (
 ) => {
   res.writeHead(200, { "Content-Type": contentType });
 
-  if (processData) {  //if i use pagnation to list employees data 
+  if (processData) {
+    //if i use pagnation to list employees data
     fs.readFile(filePath, "utf8", (err, data) => {
       if (err) {
         console.error("File read error:", err);
@@ -21,15 +22,15 @@ export const genericserverFile = (
       try {
         let jsonData = JSON.parse(data);
         jsonData = processData(jsonData); // apply pagination
-        res.end(JSON.stringify(jsonData)); 
+        res.end(JSON.stringify(jsonData));
       } catch (parseError) {
         console.error("JSON parse error:", parseError);
         res.writeHead(500, { "Content-Type": "text/plain" });
         res.end("Error 500 (Internal Server Error)");
       }
     });
-  } 
-  else {  //normal file streaming for other file types
+  } else {
+    //normal file streaming for other file types
     const data = fs.createReadStream(filePath);
 
     data.pipe(res); //automatically ends the response when the stream finishes.
@@ -102,3 +103,17 @@ export const handlePostRequest = (req, res) => {
     }
   });
 };
+
+export function paginateData(query, data) {
+  const { page = 1, limit = 20 } = query;
+  const pageNum = Number(page);
+  const limitNum = Number(limit);
+  const startIndex = (pageNum - 1) * limitNum;
+
+  return {
+    employees: data.slice(startIndex, startIndex + limitNum),
+    total: data.length,
+    page: pageNum,
+    limit: limitNum,
+  };
+}
