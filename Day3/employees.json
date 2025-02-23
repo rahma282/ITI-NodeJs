@@ -27,15 +27,6 @@
     "level": "Jr"
   },
   {
-    "ID": 4,
-    "name": "Hanan Hatem",
-    "email": "ej@ex.com",
-    "salary": 30000,
-    "age": 24,
-    "yearsOfExperience": 1,
-    "level": "Jr"
-  },
-  {
     "ID": 5,
     "name": "Shrouk Mostafa",
     "email": "ej@ex.com",
@@ -55,7 +46,7 @@
   },
   {
     "ID": 7,
-    "name": "Wael Mohamed",
+    "name": "Kareem Kamel",
     "email": "ej@ex.com",
     "salary": 70000,
     "age": 28,
@@ -169,15 +160,6 @@
     "age": 29,
     "yearsOfExperience": 10,
     "level": "Lead"
-  },
-  {
-    "ID": 20,
-    "name": "Wael Emad",
-    "email": "ej@ex.com",
-    "salary": 80000,
-    "age": 25,
-    "yearsOfExperience": 4,
-    "level": "Sr"
   },
   {
     "ID": 21,
@@ -600,5 +582,24 @@
     "salary": 30000,
     "yearsOfExperience": 0,
     "level": "Jr"
+  },
+  {
+    "ID": 72,
+    "name": "Nada Hatem",
+    "email": "NM@ex.com",
+    "salary": 20000,
+    "level": "Jr",
+    "position": "Software Engineer",
+    "age": 23,
+    "yearsOfExperience": 0
+  },
+  {
+    "ID": 73,
+    "name": "Kariman Kamel",
+    "email": "ej@ex.com",
+    "salary": 70000,
+    "age": 28,
+    "yearsOfExperience": 4,
+    "level": "Sr"
   }
 ]

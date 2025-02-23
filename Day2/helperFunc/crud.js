@@ -1,4 +1,4 @@
-import fs from 'fs';
+import fs from 'node:fs';
 
 export function getEmployees() {
   if (!fs.existsSync('./employees.json')) {
