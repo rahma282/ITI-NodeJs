@@ -21,6 +21,7 @@
     "are-docs-informative": "^0.0.2",
     "argparse": "^2.0.1",
     "balanced-match": "^1.0.2",
+    "bcrypt": "^5.1.1",
     "boolbase": "^1.0.0",
     "bootstrap": "^5.3.3",
     "brace-expansion": "^2.0.1",

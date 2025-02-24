@@ -1,0 +1,19 @@
+import jwt from 'jsonwebtoken';
+import Employees from '../models/employees.js';
+
+const authentication = async (req, res, next) => {
+  if (!req.headers.authorization) {
+    return res.status(401).json({error: 'Unauthorized'});
+  }
+  try {
+    const payload = jwt.verify(req.headers.authorization, process.env.JWT_SECRET);
+    const employee = await Employees.findById(payload.id).exec();
+    console.log(payload);
+    req.employee = employee;
+    next();
+  } catch (error) {
+    return res.status(401).json({error: 'Unauthorized'});
+  }
+};
+
+export default authentication;
