@@ -1,6 +1,9 @@
+import process from 'node:process';
+import jwt from 'jsonwebtoken';
 import moment from 'moment';
 import mongoose from 'mongoose';
 import Employees from '../models/employees.js';
+import CustomError from '../utils/customError.js';
 
 const create = async (data) => {
   const employees = await Employees.create(data);
@@ -47,4 +50,16 @@ const updateEmp = async (id, updateData) => {
   return employee;
 };
 
-export default {create, getAll, deleteEmp, updateEmp};
+const login = async (data) => {
+  const employee = await Employees.findOne({username: data.username}).exec();
+  if (!employee) {
+    throw new CustomError('User name or password is not correct', 401);
+  }
+  const isValidPassword = employee.comparePasswords(data.password);
+  if (!isValidPassword) {
+    throw new CustomError('User name or password is not correct', 401);
+  }
+  const token = jwt.sign({id: employee._id}, process.env.JWT_SECRET, {expiresIn: '1h'});
+  return token;
+};
+export default {create, getAll, deleteEmp, updateEmp, login};

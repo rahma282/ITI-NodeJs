@@ -42,8 +42,7 @@ const employeeSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
-    minlength: 8,
-    select: false
+    minlength: 8
   },
   profile: {
     type: {
@@ -100,9 +99,26 @@ employeeSchema.pre('save', async function (next) {
   this.password = await bcrypt.hash(this.password, salt);
   next();
 });
+
+employeeSchema.pre('findOneAndUpdate', async function (next) {
+  const update = this.getUpdate();
+  if (update.password) {
+    const salt = await bcrypt.genSalt(10);
+    update.password = await bcrypt.hash(update.password, salt);
+    this.setUpdate(update);
+  }
+
+  next();
+});
 employeeSchema.virtual('age').get(function () {
   return this.dob ? moment().diff(moment(this.dob), 'years') : null;
 });
+employeeSchema.set('toJSON', {
+  transform: (doc, {__v, password, ...rest}, options) => rest
+});
 
+employeeSchema.methods.comparePasswords = function (password) {
+  return bcrypt.compareSync(password, this.password);
+};
 const Employees = mongoose.model('Employees', employeeSchema);
 export default Employees;
